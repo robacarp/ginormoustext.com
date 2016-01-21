@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+<title>Ginormous Text</title>
+<script type="text/javascript">
+//+ Jonas Raoni Soares Silva
+//@ http://jsfromhell.com/string/rot13 [v1.0]
+String.prototype.rot13 = function(){
+        return this.replace(/[a-zA-Z]/g, function(c){
+                return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+        })
+}
+
+// the framework....who needs jquery? O.O
+function $(i){ return document.getElementById(i); }
+Element.prototype.u = function(t){ this.innerHTML = t; }
+Element.prototype.s = function(){ this.style.display=''; }
+Element.prototype.h = function(){ this.style.display='none'; }
+String.prototype.l = function(){ return this.substring(this.length-1,this.length); }
+
+//the worker....
+function load(){
+  as=0
+  href = document.location.href
+  question = href.indexOf('?')+1
+  if (question <= 0)
+    return keypressd($('t'))
+
+  pairs = href.substring(question,href.length).split('&')
+  text = ''
+  vars = {}
+  for (i in pairs){
+    v = pairs[i]
+    index = v.indexOf('=')
+    if (index < 0)
+      text+=' '+v
+    else
+      vars[v.substring(0,index)]=unescape(v.substring(index+1,v.length))
+  }
+
+  if (!vars.t || vars.t == ''){
+    as=1
+    vars.t = text
+  }
+
+  if (vars.t)
+    text = unescape(vars.t.replace(/\+/g,' ')).replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br />')
+  if (text.length == 0)
+    return keypressed($('t'))
+
+  text = text.rot13()
+  if (!vars.r){
+    newhref = '/?r=1&t='+escape(text)
+    if (vars.c)
+      newhref += 'c='+vars.c
+    if (vars.bg)
+      newhref += 'bg='+vars.bg
+    window.location = newhref;
+  }
+
+
+  // $('mbtn').s()
+  $('hbtn').h()
+
+  dbs = document.body.style
+  $('area').innerHTML="<h1>"+text+"</h1>"
+  if (vars.c)
+    dbs.color = vars.c
+  if (vars.bg)
+    dbs.backgroundColor = vars.bg
+  if (as){
+    $('t').value = vars.t
+    alert('hi')
+    $('t').up('form').submit()
+  }
+
+  if (vars.tit)
+    document.title = vars.tit
+}
+
+//an event....this *should* be triggered onkeyup...but everybody fails at that.
+//              so this is triggered onkeypress instead.  Missed it by that much.
+function keypressd(elem){
+  val = elem.value
+  hei = val.split('\n').length * 1.3
+  if (val.l()=='\n') hei+=1.3
+  if (hei < 1.3) hei = 1.3
+  elem.style.height = hei + 'em'
+}
+
+//oh snap.
+function rot_it(){
+  val=$('t').value
+  $('t').value = val.rot13()
+}
+
+//oooOOOooOoh...dhtml...
+function fill_hidden(){
+        $('hidden').u('<label>Text Color:</label><input type="text" name="c" class="col" autocomplete="off" value="#111"/><br /> <label>BG Color:</label><input type="text" name="bg" class="col" autocomplete="off" value="#999"/><br />');
+        $('hidden').s();
+        $('hbtn').h();
+}
+</script>
+<style>
+  a, a:visited, a:hover { color:#fff; text-decoration:none; font-size:1.5em;}
+  body { margin:5em 0 0 0; padding:0; background:#999; color:#111; text-align:center; }
+  input, textarea { font-size:1em; border:3px solid black; background:#999; height:1.3em; }
+  label { margin:0 1em 0 0; }
+  h1 { font-size:3em; }
+  #area { font-family:Helvetica, sans-serif; font-size:3em; }
+  #hidden { font-size:0.5em; border:2px dashed #111; margin:0.5em auto; padding:0.5em; width:20em;}
+  #hidden input { border-width:2px; }
+  #normal { font-size:1.0em };
+  .col { color:#f00; width:2em; }
+</style>
+</head>
+<body onload="load()">
+<div id="area">
+  <form method="get" onsubmit="rot_it()">
+    <input type="hidden" name="r" value="1" />
+    <textarea name="t" id="t" onkeypress="keypressd(this)" autocomplet="ofF"></textarea><br />
+    <input type="submit" value="Make GINORMOUS&rarr;" id="go"/>
+    <div id="hidden" style="display:none;"></div>
+  </form>
+</div>
+<div id="links">
+  <a id="hbtn" href="#" onclick="fill_hidden();return false">Advanced</a>
+  <!--a id="mbtn" style="display:none;" href="/">Make Your Own</a><br />
+  GINORMOUSTEXT.COM<br>
+  <span style="font-size:0.7em">TRUE MEMES NEED NO PICTURE.</span-->
+</div>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-149107-6']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>
